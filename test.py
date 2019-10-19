@@ -17,6 +17,8 @@ pygame.display.set_caption("Turtles In Trash")
 
 going = 1
 
+speed = 10
+
 screen_x = 1450
 screen_y = 800
 boundary_left = 725
@@ -66,7 +68,8 @@ yblocks = range(0, screen_y, 20)
 
 # start the main loop.
 
-
+map_rect[0] = -100
+map_rect[1] = -100
 
 while going:
     pygame.event.pump()
@@ -77,27 +80,27 @@ while going:
     # move the map around, depending on the keys.
     if keys[K_LEFT]:
         # print(map_rect.x)
-        if map_rect.x +3 <= 0:
-            map_rect.x += 5
+        if map_rect.x + speed <= 0:
+            map_rect.x += speed
             turtle = load_image("turtle_left.png")
-            # turtle_mask = pygame.mask.from_surface(turtle, 50)
+            turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_RIGHT]:
         # print(map_rect.x)
-        if map_rect.x -3 >= boundary_right:
-            map_rect.x -= 5
+        if map_rect.x - speed >= boundary_right:
+            map_rect.x -= speed
             turtle = load_image("turtle_right.png")
-            # turtle_mask = pygame.mask.from_surface(turtle, 50)
+            turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_UP]:
         # print(map_rect.y)
-        if map_rect.y +3 <= 0:
-            map_rect.y += 5
-            turtle = load_image("turtle_up.png")
+        if map_rect.y + speed <= 0:
+            map_rect.y += speed
+            # turtle = load_image("turtle_up.png")
             # turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_DOWN]:
         # print(map_rect.y)
-        if map_rect.y -3 >= boundary_down:
-            map_rect.y -= 5
-            turtle = load_image("turtle_down.png")
+        if map_rect.y - speed >= boundary_down:
+            map_rect.y -= speed
+            # turtle = load_image("turtle_down.png")
             # turtle_mask = pygame.mask.from_surface(turtle, 50)
 
 
@@ -129,13 +132,13 @@ while going:
     if overlap:
         # we have hit the wall!!!  oh noes!
         if keys[K_LEFT]:
-            map_rect.x -= 5
+            map_rect.x -= speed
         if keys[K_RIGHT]:
-            map_rect.x += 5
+            map_rect.x += speed
         if keys[K_UP]:
-            map_rect.y -= 5
+            map_rect.y -= speed
         if keys[K_DOWN]:
-            map_rect.y += 5
+            map_rect.y += speed
         print("COLLISION!")
 
     # draw map + turtle
