@@ -6,32 +6,42 @@ import pygame
 
 
 class Player:
-        x = 10
-        y = 10
-        speed = 1
+        x = 250
+        y = 200
+        #speed = 1
 
-        def moveRight(self):
-            self.x = self.x + self.speed
+        def turnRight(self):
+            #self.x = self.x + self.speed
+            pygame.transform.rotate(self,90)
 
-        def moveLeft(self):
-            self.x = self.x - self.speed
+        def turnLeft(self):
+            #self.x = self.x - self.speed
+            rot_center()
 
-        def moveUp(self):
-            self.y = self.y - self.speed
+        def turnUp(self):
+            #self.y = self.y - self.speed
+            rot_center()
 
-        def moveDown(self):
-            self.y = self.y + self.speed
+        def turnDown(self):
+            #self.y = self.y + self.speed
+            rot_center()
 
 class Trash:
         x = 100
         y = 10
 
 class Game:
-    def isCollision(self,x1,y1,x2,y2,bsize):
-        if x1 >= x2 and x1 <= x2 + bsize:
-            if y1 >= y2 and y1 <= y2 + bsize:
-                return True
-        return False
+    # def isCollision(self,x1,y1,x2,y2,bsize):
+    #     if x1 >= x2 and x1 <= x2 + bsize:
+    #         if y1 >= y2 and y1 <= y2 + bsize:
+    #             return True
+    #     return False
+    def rot_center(image, angle):
+        #def rot_center(image, rect, angle):
+        """rotate an image while keeping its center"""
+        rot_image = pygame.transform.rotate(image[x], image[y], angle)
+        #rot_rect = rot_image.get_rect(center=rect.center)
+        return rot_image #,rot_rect
 
 
 class App:
@@ -64,10 +74,10 @@ class App:
 
         def on_loop(self): #COLLISION STUFF UNNECESSARY
             # does snake eat apple?
-            #for i in range(0,self.player.length):
-                if self.game.isCollision(self.trash.x,self.trash.y,self.player.x, self.player.y,44):
-                    print ("You lose! collision!")
-                pass
+            # #for i in range(0,self.player.length):
+            #     if self.game.isCollision(self.trash.x,self.trash.y,self.player.x, self.player.y,44):
+            #         print ("You lose! collision!")
+            pass
 
         def on_render(self):
             self._display_surf.fill((0,0,0))
@@ -86,16 +96,16 @@ class App:
                 keys = pygame.key.get_pressed()
 
                 if (keys[K_RIGHT]):
-                    self.player.moveRight()
+                    self.game.rot_center(self.player, 90)
 
                 if (keys[K_LEFT]):
-                    self.player.moveLeft()
+                    self.player.turnLeft()
 
                 if (keys[K_UP]):
-                    self.player.moveUp()
+                    self.player.turnUp()
 
                 if (keys[K_DOWN]):
-                    self.player.moveDown()
+                    self.player.turnDown()
 
                 if (keys[K_ESCAPE]):
                     self._running = False
