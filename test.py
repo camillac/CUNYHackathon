@@ -1,7 +1,11 @@
 import os
 import pygame
 import math
+from math import sin
 from pygame.locals import *
+import time
+
+main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 pygame.display.init()
 pygame.font.init()
@@ -14,7 +18,7 @@ going = 1
 
 screen_x = 1450
 screen_y = 800
-screen = pygame.display.set_mode((screen_x,screen_y)) #sets the display screen
+screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
 # set display color as ocean blue
 screen.fill((7,176,157))
 pygame.display.flip()
@@ -27,7 +31,7 @@ def load_image(i):
 turtle = load_image("turtle_right.png")
 trash = load_image("map.png")
 ocean = load_image("ocean.jpg")
-
+ocean = pygame.transform.scale2x(ocean)
 
 # create a mask for each of them.
 turtle_mask = pygame.mask.from_surface(turtle, 50)
@@ -40,6 +44,16 @@ trash_rect = trash.get_rect()
 afont = pygame.font.Font(None, 16)
 hitsurf = afont.render("Hit!!!  Oh noes!!", 1, (255,255,255))
 
+if screen.get_bitsize() == 8:
+    screen.set_palette(ocean.get_palette())
+else:
+    ocean = ocean.convert()
+
+anim = 0.0
+
+# mainloop
+xblocks = range(0, screen_x, 20)
+yblocks = range(0, screen_y, 20)
 
 # start the main loop.
 
@@ -76,7 +90,16 @@ while going:
 
     # draw the background color, and the terrain.
     screen.fill((7,176,157))
-    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
+
+    # liquid function for making it liquidy
+    anim = anim + 0.1
+    for x in xblocks:
+        xpos = (x + (sin(anim + x * 0.01) * 15)) + 20
+        for y in yblocks:
+            ypos = (y + (sin(anim + y * 0.01) * 15)) + 20
+            screen.blit(ocean, (x, y), (xpos, ypos, 20, 20))
+
+    # draw trash + turtle
     screen.blit(trash, (trash_rect[0], trash_rect[1]) )
     screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
     # draw the balloon rect, so you can see where the bounding rect would be.
@@ -91,6 +114,7 @@ while going:
 
     # flip the display.
     pygame.display.flip()
+    time.sleep(0.01)
 
     # # limit the frame rate to 40fps.
     # clock.tick(40)
