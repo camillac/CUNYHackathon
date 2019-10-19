@@ -14,11 +14,6 @@ logo = pygame.image.load("turtle_left.png")
 pygame.display.set_icon(logo)
 pygame.display.set_caption("Turtles In Trash")
 
-keystroke = 0
-LEFT = 1
-RIGHT = 2
-UP = 3
-DOWN = 4
 
 going = 1
 
@@ -41,7 +36,7 @@ def load_image(i):
 
 turtle = load_image("turtle_right.png")
 map = load_image("map.png")
-ocean = load_image("ocean.jpg")
+ocean = load_image("ocean.png")
 ocean = pygame.transform.scale2x(ocean)
 
 # create a mask for each of them.
@@ -81,23 +76,19 @@ while going:
     # move the map around, depending on the keys.
     if keys[K_LEFT]:
         # print(map_rect.x)
-        keystroke = LEFT
         if map_rect.x +3 <= 0:
             map_rect.x += 5
-        #turtle = load_image("turtle_left.png")
+        turtle = load_image("turtle_left.png")
     if keys[K_RIGHT]:
-        keystroke = RIGHT
         # print(map_rect.x)
         if map_rect.x -3 >= boundary_right:
             map_rect.x -= 5
-        #turtle = load_image("turtle_right.png")
+        turtle = load_image("turtle_right.png")
     if keys[K_UP]:
-        keystroke = UP
         # print(map_rect.y)
         if map_rect.y +3 <= 0:
             map_rect.y += 5
     if keys[K_DOWN]:
-        keystroke = DOWN
         # print(map_rect.y)
         if map_rect.y -3 >= boundary_down:
             map_rect.y -= 5
@@ -119,7 +110,7 @@ while going:
     screen.fill((7,176,157))
 
     # liquid function for making it liquidy
-    anim = anim + 0.1
+    anim = anim + 0.02
     for x in xblocks:
         xpos = (x + (sin(anim + x * 0.01) * 15)) + 20
         for y in yblocks:
