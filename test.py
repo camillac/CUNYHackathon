@@ -1,183 +1,108 @@
-#!/usr/bin/env python
-"""A pgyame.mask collition detection example
-exports main()
-This module can also be run as a stand-alone program, excepting
-one or more image file names as command line arguments.
-"""
+import os
+import pygame
+from pygame.locals import *
 
-import sys, random
-import pygame, pygame.image, pygame.surface, pygame.time, pygame.display
+pygame.display.init()
+pygame.font.init()
 
+pygame.display.set_caption("Turtles In Trash")
 
-def maskFromSurface(surface, threshold=127):
-    # return pygame.mask.from_surface(surface, threshold)
+going = 1
 
-    mask = pygame.mask.Mask(surface.get_size())
-    key = surface.get_colorkey()
-    if key:
-        for y in range(surface.get_height()):
-            for x in range(surface.get_width()):
-                if surface.get_at((x, y)) != key:
-                    mask.set_at((x, y), 1)
-    else:
-        for y in range(surface.get_height()):
-            for x in range(surface.get_width()):
-                if surface.get_at((x, y))[3] > threshold:
-                    mask.set_at((x, y), 1)
-    return mask
+screen = pygame.display.set_mode((500,500))
 
+# set display color as ocean blue
+screen.fill((7,176,157))
+pygame.display.flip()
 
-def vadd(x, y):
-    return [x[0] + y[0], x[1] + y[1]]
+### MASK CODE TAKEN FROM SAMPLE PROGRAM - https://github.com/illume/pixel_perfect_collision
+def load_image(i):
+    'load an image from the data directory with per pixel alpha transparency.'
+    return pygame.image.load(os.path.join(".", i)).convert_alpha()
 
+trash = load_image("turtle.png")
+turtle = load_image("terrain1.png")
 
-def vsub(x, y):
-    return [x[0] - y[0], x[1] - y[1]]
+# create a mask for each of them.
+trash_mask = pygame.mask.from_surface(trash, 50)
+turtle_mask = pygame.mask.from_surface(turtle, 50)
 
+trash_rect = trash.get_rect()
+turtle_rect = turtle.get_rect()
 
-def vdot(x, y):
-    return x[0] * y[0] + x[1] * y[1]
+# a message for if the balloon hits the terrain.
+afont = pygame.font.Font(None, 16)
+hitsurf = afont.render("Hit!!!  Oh noes!!", 1, (255,255,255))
 
 
-class Sprite:
-    def __init__(self, surface, mask=None):
-        self.surface = surface
-        if mask:
-            self.mask = mask
-        else:
-            self.mask = maskFromSurface(self.surface)
-        self.setPos([0, 0])
-        self.setVelocity([0, 0])
 
-    def setPos(self, pos):
-        self.pos = [pos[0], pos[1]]
+def moveRight(self):
+    self.x = self.x + self.speed
 
-    def setVelocity(self, vel):
-        self.vel = [vel[0], vel[1]]
+def moveLeft(self):
+    self.x = self.x - self.speed
 
-    def move(self, dr):
-        self.pos = vadd(self.pos, dr)
+def moveUp(self):
+    self.y = self.y - self.speed
 
-    def kick(self, impulse):
-        self.vel[0] += impulse[0]
-        self.vel[1] += impulse[1]
+def moveDown(self):
+    self.y = self.y + self.speed
 
-    def collide(self, s):
-        """Test if the sprites are colliding and
-        resolve the collision in this case."""
-        offset = [int(x) for x in vsub(s.pos, self.pos)]
-        overlap = self.mask.overlap_area(s.mask, offset)
-        if overlap == 0:
-            return
-        """Calculate collision normal"""
-        nx = self.mask.overlap_area(
-            s.mask, (offset[0] + 1, offset[1])
-        ) - self.mask.overlap_area(s.mask, (offset[0] - 1, offset[1]))
-        ny = self.mask.overlap_area(
-            s.mask, (offset[0], offset[1] + 1)
-        ) - self.mask.overlap_area(s.mask, (offset[0], offset[1] - 1))
-        if nx == 0 and ny == 0:
-            """One sprite is inside another"""
-            return
-        n = [nx, ny]
-        dv = vsub(s.vel, self.vel)
-        J = vdot(dv, n) / (2 * vdot(n, n))
-        if J > 0:
-            """Can scale up to 2*J here to get bouncy collisions"""
-            J *= 1.9
-            self.kick([nx * J, ny * J])
-            s.kick([-J * nx, -J * ny])
-        return
+# start the main loop.
 
-        # """Separate the sprites"""
-        # c1 = -overlap/vdot(n,n)
-        # c2 = -c1/2
-        # self.move([c2*nx,c2*ny])
-        # s.move([(c1+c2)*nx,(c1+c2)*ny])
+while going:
+    pygame.event.pump()
+    keys = pygame.key.get_pressed()
+    if keys[QUIT] or keys[K_ESCAPE]:
+        going = 0
+    # if e.type == pygame.KEYDOWN:
+    #     # move the balloon around, depending on the keys.
+    if keys[K_LEFT]:
+        turtle_rect.x -= 1
+        # turtle = load_image("turtle2.png")
+    if keys[K_RIGHT]:
+        turtle_rect.x += 1
 
-    def update(self, dt):
-        self.pos[0] += dt * self.vel[0]
-        self.pos[1] += dt * self.vel[1]
+    if keys[K_UP]:
+        turtle_rect.y -= 1
+    if keys[K_DOWN]:
+        turtle_rect.y += 1
+
+    # see how far the balloon rect is offset from the terrain rect.
+    bx, by = (turtle_rect[0], turtle_rect[1])
+    offset_x = bx - trash_rect[0]
+    offset_y = by - trash_rect[1]
+
+    #print bx, by
+    overlap = trash_mask.overlap(turtle_mask, (offset_x, offset_y))
+
+    #
+    last_bx, last_by = bx, by
 
 
-def main(*args):
-    """Display multiple images bounce off each other using collition detection
-    Positional arguments:
-      one or more image file names.
-    This pygame.masks demo will display multiple moving sprites bouncing
-    off each other. More than one sprite image can be provided.
-    """
+    # draw the background color, and the terrain.
+    screen.fill((7,176,157))
+    screen.blit(trash, (0,0))
 
-    if len(args) == 0:
-        raise ValueError("Require at least one image file name: non given")
-    print("Press any key to quit")
-    screen = pygame.display.set_mode((640, 480))
-    images = []
-    masks = []
-    for impath in args:
-        images.append(pygame.image.load(impath).convert_alpha())
-        masks.append(maskFromSurface(images[-1]))
+    # draw the balloon.
+    screen.blit(turtle, (turtle_rect[0], turtle_rect[1]) )
 
-    numtimes = 10
-    import time
-
-    t1 = time.time()
-    for x in range(numtimes):
-        unused_mask = maskFromSurface(images[-1])
-    t2 = time.time()
-
-    print("python maskFromSurface :%s" % (t2 - t1))
-
-    t1 = time.time()
-    for x in range(numtimes):
-        unused_mask = pygame.mask.from_surface(images[-1])
-    t2 = time.time()
-
-    print("C pygame.mask.from_surface :%s" % (t2 - t1))
-
-    sprites = []
-    for i in range(20):
-        j = i % len(images)
-        s = Sprite(images[j], masks[j])
-        s.setPos(
-            (
-                random.uniform(0, screen.get_width()),
-                random.uniform(0, screen.get_height()),
-            )
-        )
-        s.setVelocity((random.uniform(-5, 5), random.uniform(-5, 5)))
-        sprites.append(s)
-    pygame.time.set_timer(pygame.USEREVENT, 33)
-    while 1:
-        event = pygame.event.wait()
-        if event.type == pygame.QUIT:
-            return
-        elif event.type == pygame.USEREVENT:
-            """Do both mechanics and screen update"""
-            screen.fill((240, 220, 100))
-            for i in range(len(sprites)):
-                for j in range(i + 1, len(sprites)):
-                    sprites[i].collide(sprites[j])
-            for s in sprites:
-                s.update(1)
-                if s.pos[0] < -s.surface.get_width() - 3:
-                    s.pos[0] = screen.get_width()
-                elif s.pos[0] > screen.get_width() + 3:
-                    s.pos[0] = -s.surface.get_width()
-                if s.pos[1] < -s.surface.get_height() - 3:
-                    s.pos[1] = screen.get_height()
-                elif s.pos[1] > screen.get_height() + 3:
-                    s.pos[1] = -s.surface.get_height()
-                screen.blit(s.surface, s.pos)
-            pygame.display.update()
-        elif event.type == pygame.KEYDOWN:
-            return
+    # draw the balloon rect, so you can see where the bounding rect would be.
+    pygame.draw.rect(screen, (0,255,0), turtle_rect, 1)
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: mask.py <IMAGE> [<IMAGE> ...]")
-        print("Let many copies of IMAGE(s) bounce against each other")
-        print("Press any key to quit")
-    else:
-        main(*sys.argv[1:])
+    # see if there was an overlap of pixels between the balloon
+    #   and the terrain.
+    if overlap:
+        # we have hit the wall!!!  oh noes!
+        screen.blit(hitsurf, (0,0))
+
+    # flip the display.
+    pygame.display.flip()
+
+    # # limit the frame rate to 40fps.
+    # clock.tick(40)
+
+
+
+pygame.quit()
