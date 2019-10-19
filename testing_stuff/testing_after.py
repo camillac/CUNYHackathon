@@ -102,15 +102,15 @@ while going:
         # we have hit the wall!!!  oh noes!
         #print(keystroke)
         if keys[K_LEFT]:
-            trash_rect.x -= 1
+            trash_rect.x -= 3
 
         if keys[K_RIGHT]:
-            trash_rect.x += 1
+            trash_rect.x += 3
 
         if keys[K_UP]:
-            trash_rect.y -= 1
+            trash_rect.y -= 3
         if keys[K_DOWN]:
-            trash_rect.y += 1
+            trash_rect.y += 3
 
 
 
@@ -149,7 +149,7 @@ while going:
 
 
     # flip the display.
-    pygame.display.flip()
+    #pygame.display.flip()
 
     # # limit the frame rate to 40fps.
     # clock.tick(40)
