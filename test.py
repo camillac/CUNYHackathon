@@ -36,6 +36,7 @@ def load_image(i):
 
 turtle = load_image("turtle_right.png")
 map = load_image("map.png")
+baby = load_image("baby.png")
 # map = pygame.transform.scale2x(map)
 ocean = load_image("ocean.png")
 ocean = pygame.transform.scale2x(ocean)
@@ -43,9 +44,11 @@ ocean = pygame.transform.scale2x(ocean)
 # create a mask for each of them.
 turtle_mask = pygame.mask.from_surface(turtle, 50)
 map_mask = pygame.mask.from_surface(map, 50)
+baby_mask = pygame.mask.from_surface(baby, 50)
 
 turtle_rect = turtle.get_rect()
 map_rect = map.get_rect()
+baby_rect = baby.get_rect()
 
 # a message for if the map hits the terrain.
 afont = pygame.font.Font(None, 16)
@@ -106,8 +109,13 @@ while going:
     offset_x = bx - math.floor(screen_x/2-150)#turtle_rect[0]
     offset_y = by - math.floor(screen_y/2-100)#turtle_rect[1]
 
+    cx, cy = (baby_rect[0], baby_rect[1])
+    offset_a = cx - math.floor(screen_x/2-150)#turtle_rect[0]
+    offset_b = cy - math.floor(screen_y/2-100)#turtle_rect[1]
+
     #print bx, by
     overlap = turtle_mask.overlap(map_mask, (offset_x, offset_y))
+    touchbaby = turtle_mask.overlap(baby_mask, (offset_a, offset_b))
 
     #
     last_bx, last_by = bx, by
@@ -126,6 +134,10 @@ while going:
 
     # see if there was an overlap of pixels between the map
     #   and the terrain.
+    if touchbaby:
+        print("BABYYYYY")
+        #turtle image becomes turtle + baby image?
+        #stop baby from moving w the map?
     if overlap:
         # we have hit the wall!!!  oh noes!
         if keys[K_LEFT]:
@@ -141,6 +153,7 @@ while going:
     # draw map + turtle
     screen.blit(map, (map_rect[0], map_rect[1]) )
     screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
+    screen.blit(baby, (map_rect[0], map_rect[1]) )
     # draw the map rect, so you can see where the bounding rect would be.
     pygame.draw.rect(screen, (0,255,0), map_rect, 1)
 
