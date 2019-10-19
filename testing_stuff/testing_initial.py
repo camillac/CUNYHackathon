@@ -50,6 +50,8 @@ while going:
     #     # move the balloon around, depending on the keys.
     if keys[K_LEFT]:
         trash_rect.x += 3
+        #pygame.transform.flip(trash, True, False)
+
         # turtle = load_image("turtle2.png")
     if keys[K_RIGHT]:
         trash_rect.x -= 3
@@ -78,13 +80,13 @@ while going:
 
     # draw the balloon.
     #screen.blit(ocean, (0,0))
-    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0))
+    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
     screen.blit(trash, (trash_rect[0], trash_rect[1]) )
     screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
 
 
     # draw the map rect, so you can see where the bounding rect would be.
-    pygame.draw.rect(screen, (0,255,0), trash_rect, 1)
+    pygame.draw.rect(screen, (0,255,0), trash_rect, 10)
 
 
     # see if there was an overlap of pixels between the balloon
