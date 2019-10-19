@@ -35,19 +35,6 @@ afont = pygame.font.Font(None, 16)
 hitsurf = afont.render("Hit!!!  Oh noes!!", 1, (255,255,255))
 
 
-
-def moveRight(self):
-    self.x = self.x + self.speed
-
-def moveLeft(self):
-    self.x = self.x - self.speed
-
-def moveUp(self):
-    self.y = self.y - self.speed
-
-def moveDown(self):
-    self.y = self.y + self.speed
-
 # start the main loop.
 
 while going:
