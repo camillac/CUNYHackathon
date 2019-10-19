@@ -36,6 +36,7 @@ def load_image(i):
 
 turtle = load_image("turtle_right.png")
 map = load_image("map.png")
+# map = pygame.transform.scale2x(map)
 ocean = load_image("ocean.png")
 ocean = pygame.transform.scale2x(ocean)
 
@@ -78,20 +79,26 @@ while going:
         # print(map_rect.x)
         if map_rect.x +3 <= 0:
             map_rect.x += 5
-        turtle = load_image("turtle_left.png")
+            turtle = load_image("turtle_left.png")
+            turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_RIGHT]:
         # print(map_rect.x)
         if map_rect.x -3 >= boundary_right:
             map_rect.x -= 5
-        turtle = load_image("turtle_right.png")
+            turtle = load_image("turtle_right.png")
+            turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_UP]:
         # print(map_rect.y)
         if map_rect.y +3 <= 0:
             map_rect.y += 5
+            turtle = load_image("turtle_up.png")
+            turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_DOWN]:
         # print(map_rect.y)
         if map_rect.y -3 >= boundary_down:
             map_rect.y -= 5
+            turtle = load_image("turtle_down.png")
+            turtle_mask = pygame.mask.from_surface(turtle, 50)
 
 
     # see how far the map rect is offset from the turtle rect.
