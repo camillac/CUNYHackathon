@@ -45,15 +45,15 @@ while going:
     # if e.type == pygame.KEYDOWN:
     #     # move the balloon around, depending on the keys.
     if keys[K_LEFT]:
-        trash_rect.x -= 1
+        trash_rect.x += 1
         # turtle = load_image("turtle2.png")
     if keys[K_RIGHT]:
-        trash_rect.x += 1
+        trash_rect.x -= 1
 
     if keys[K_UP]:
-        trash_rect.y -= 1
-    if keys[K_DOWN]:
         trash_rect.y += 1
+    if keys[K_DOWN]:
+        trash_rect.y -= 1
 
     # see how far the balloon rect is offset from the terrain rect.
     bx, by = (trash_rect[0], trash_rect[1])
