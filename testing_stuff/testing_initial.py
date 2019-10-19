@@ -15,7 +15,7 @@ screen_y = 800
 screen = pygame.display.set_mode((screen_x,screen_y)) #sets the display screen
 
 # set display color as ocean blue
-screen.fill((7,176,157))
+#screen.fill((7,176,157))
 pygame.display.flip() #Update the full display Surface to the screen
 
 ### MASK CODE TAKEN FROM SAMPLE PROGRAM - https://github.com/illume/pixel_perfect_collision
@@ -25,6 +25,7 @@ def load_image(i):
 
 turtle = load_image("turtle.png")
 trash = load_image("terrain1.png")
+ocean = load_image("ocean.jpg")
 
 # create a mask for each of them.
 turtle_mask = pygame.mask.from_surface(turtle, 50)
@@ -76,6 +77,8 @@ while going:
 
 
     # draw the balloon.
+    #screen.blit(ocean, (0,0))
+    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0))
     screen.blit(trash, (trash_rect[0], trash_rect[1]) )
     screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
 
