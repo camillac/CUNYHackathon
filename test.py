@@ -23,8 +23,8 @@ screen_x = 1450
 screen_y = 800
 boundary_left = 725
 boundary_up = -400
-boundary_right = -1560
-boundary_down = -1200
+boundary_right = -3050
+boundary_down = -2200
 
 screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
 # set display color as ocean blue
@@ -71,8 +71,8 @@ yblocks = range(0, screen_y, 20)
 
 # start the main loop.
 
-map_rect[0] = -100
-map_rect[1] = -100
+map_rect[0] = -180
+map_rect[1] = -120
 
 while going:
     pygame.event.pump()
@@ -86,13 +86,13 @@ while going:
         if map_rect.x + speed <= 0:
             map_rect.x += speed
             turtle = load_image("turtle_left.png")
-            turtle_mask = pygame.mask.from_surface(turtle, 50)
+            # turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_RIGHT]:
         # print(map_rect.x)
         if map_rect.x - speed >= boundary_right:
             map_rect.x -= speed
             turtle = load_image("turtle_right.png")
-            turtle_mask = pygame.mask.from_surface(turtle, 50)
+            # turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_UP]:
         # print(map_rect.y)
         if map_rect.y + speed <= 0:
