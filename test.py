@@ -5,6 +5,8 @@ from pygame.locals import *
 pygame.display.init()
 pygame.font.init()
 
+logo = pygame.image.load("turtle_left.png")
+pygame.display.set_icon(logo)
 pygame.display.set_caption("Turtles In Trash")
 
 going = 1
@@ -20,8 +22,8 @@ def load_image(i):
     'load an image from the data directory with per pixel alpha transparency.'
     return pygame.image.load(os.path.join(".", i)).convert_alpha()
 
-turtle = load_image("turtle.png")
-trash = load_image("terrain1.png")
+turtle = load_image("turtle_right.png")
+trash = load_image("map.png")
 
 # create a mask for each of them.
 turtle_mask = pygame.mask.from_surface(turtle, 50)
@@ -46,9 +48,10 @@ while going:
     #     # move the balloon around, depending on the keys.
     if keys[K_LEFT]:
         trash_rect.x += 1
-        # turtle = load_image("turtle2.png")
+        turtle = load_image("turtle_left.png")
     if keys[K_RIGHT]:
         trash_rect.x -= 1
+        turtle = load_image("turtle_right.png")
 
     if keys[K_UP]:
         trash_rect.y += 1
