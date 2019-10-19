@@ -16,8 +16,8 @@ screen_x = 1450
 screen_y = 800
 boundary_left = 725
 boundary_up = -400
-boundary_right = 2275
-boundary_down = -1600
+boundary_right = -1560
+boundary_down = -1200
 screen = pygame.display.set_mode((screen_x,screen_y)) #sets the display screen
 # set display color as ocean blue
 screen.fill((7,176,157))
@@ -57,22 +57,28 @@ while going:
     #     # move the balloon around, depending on the keys.
     if keys[K_LEFT]:
         print(trash_rect.x)
-        if trash_rect.x +3 <= boundary_left:
-            trash_rect.x += 3
+        if trash_rect.x +3 <= 0:
+            trash_rect.x += 10
         #turtle = load_image("turtle_left.png")
     if keys[K_RIGHT]:
+        print(trash_rect.x)
+
         if trash_rect.x -3 >= boundary_right:
-            trash_rect.x -= 3
+            trash_rect.x -= 10
 
         #turtle = load_image("turtle_right.png")
 
     if keys[K_UP]:
-        if trash_rect.y +3 >= boundary_up:
-            trash_rect.y += 3
+        print(trash_rect.y)
+
+        if trash_rect.y +3 <= 0:
+            trash_rect.y += 10
 
     if keys[K_DOWN]:
-        if trash_rect.y -3 <= boundary_down:
-            trash_rect.y -= 3
+        print(trash_rect.y)
+
+        if trash_rect.y -3 >= boundary_down:
+            trash_rect.y -= 10
 
     # see how far the balloon rect is offset from the terrain rect.
     bx, by = (trash_rect[0], trash_rect[1])
