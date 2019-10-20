@@ -5,6 +5,7 @@ from math import sin
 from pygame.locals import *
 import time
 import pdb
+import webbrowser
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
@@ -220,52 +221,6 @@ def on_execute():
     on_cleanup()
 
 
-def story():
-    going = 1
-    count = 0
-    afont = pygame.font.Font(None, 150)
-
-    welcome = afont.render("Help Josie get to her baby!", 1, (138, 203, 230))
-
-    wel2 = afont.render("Avoid the trash so she can", 1, (138, 203, 230))
-
-    wel3 = afont.render("get to her baby!", 1, (138, 203, 230))
-    afont = pygame.font.Font(None, 100)
-
-    cl_but = afont.render("Click the button to continue", 1, (138, 203, 230))
-
-
-    screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
-    #screen.fill((255,255,255))
-    ocean = load_image("ocean.png")
-    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
-
-    pygame.display.flip()
-    button = pygame.Rect(screen_x/2-200, screen_y/2, 200, 100)
-    while going:
-        screen.blit(welcome, (20,screen_y/9))
-        screen.blit(wel2, (20 ,screen_y/7 + 100))
-        screen.blit(wel3, (200,screen_y/7 + 200))
-
-        screen.blit(cl_but, (90 ,screen_y-70))
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = event.pos  # gets mouse position
-
-                # checks if mouse position is over the button
-                if button.collidepoint(mouse_pos):
-                    # prints current location of mouse
-                    #ye = True
-                    # print('button was pressed at {0}'.format(mouse_pos))
-                    # ye = True
-                    on_execute()
-
-            pygame.draw.rect(screen, [52, 88, 235], button)  # draw button
-
-            pygame.display.update()
-
 def end_game(i):
 
     going = 1
@@ -286,11 +241,11 @@ def end_game(i):
 
 
     screen.blit(pygame.transform.scale(end, (1450,800)), (0, 0)) #scales the image to the screen size    pygame.display.flip()
-    button = pygame.Rect(screen_x/2-85, screen_y/2+60, 200, 200)
+    button = pygame.Rect(screen_x/2-100, screen_y/2+60, 200, 200)
     # screen.blit(welcome, (0,screen_y/4))
     # screen.blit(cl_but, (screen_x/3-100 ,screen_y/3 + 40))
 
-    screen.blit(redSquare ,(screen_x/2-85, screen_y/2+60)) # paint to screen
+    screen.blit(redSquare ,(screen_x/2-100, screen_y/2+60)) # paint to screen
     # print(screen_x/2)
     # print(screen_y+100)
     pygame.display.flip() # paint screen one time
@@ -323,11 +278,14 @@ def end_game(i):
                 #     print('button was pressed at {0}'.format(mouse_pos))
                     # ye = True
                     #story()
-                    screen.blit(second_t ,(screen_x/2-85, screen_y/2+60)) # paint to screen
+                    screen.blit(second_t ,(screen_x/2-100, screen_y/2+60)) # paint to screen
                     pygame.display.flip() # paint screen one time
 
+                    if i == BAD:
+                        end_game(on_execute())
+                    if i == GOOD:
+                        webbrowser.open("https://www.seeturtles.org/help-save-turtles")
 
-                    end_game(on_execute())
 
             # pygame.draw.rect(screen, [255, 0, 0], redSquare)  # draw button
 
@@ -335,6 +293,27 @@ def end_game(i):
 
             pygame.display.update()
 
+
+def story():
+    going = 1
+
+    screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
+    ocean = load_image("ocean.png")
+    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
+
+    pygame.display.flip()
+
+    while going:
+        pygame.event.pump()
+        keys = pygame.key.get_pressed()
+        if keys[QUIT] or keys[K_ESCAPE]:
+            exit()
+        # move the map around, depending on the keys.
+        if keys[K_LEFT] or keys[K_RIGHT] or keys[K_UP] or keys[K_DOWN]:
+
+            end_game(on_execute())
+
+        pygame.display.update()
 
 
 def starter_page():
@@ -400,7 +379,7 @@ def starter_page():
                     pygame.display.flip() # paint screen one time
 
 
-                    end_game(on_execute())
+                    story()
 
             # pygame.draw.rect(screen, [255, 0, 0], redSquare)  # draw button
 
