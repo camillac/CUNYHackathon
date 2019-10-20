@@ -288,6 +288,9 @@ def starter_page():
     redSquare_rect = redSquare.get_rect()
     redSquare_rect.x = screen_x/2
     redSquare_rect.y = screen_y/2 +20
+    second_t = pygame.image.load("turt_light.png").convert_alpha()
+    pygame.transform.scale2x(second_t)
+
 
     screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size    pygame.display.flip()
     button = pygame.Rect(screen_x/2-50, screen_y/2+60, 200, 200)
@@ -330,6 +333,10 @@ def starter_page():
                 #     print('button was pressed at {0}'.format(mouse_pos))
                     # ye = True
                     #story()
+                    screen.blit(second_t ,(screen_x/2-50, screen_y/2+60)) # paint to screen
+                    pygame.display.flip() # paint screen one time
+
+
                     on_execute()
 
             # pygame.draw.rect(screen, [255, 0, 0], redSquare)  # draw button
