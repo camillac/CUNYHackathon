@@ -43,6 +43,22 @@ baby = load_image("baby.png")
 ocean = load_image("ocean.png")
 # ocean = pygame.transform.scale2x(ocean)
 
+red=(255,0,0)
+green=(0,255,0)
+
+healthbar_rect = pygame.Rect(0,0,200,30) #green
+healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
+healthbar_surf.fill((0,255,0))
+counter = 0
+
+def damage(counter):
+    if counter <100:
+        damage_rect = pygame.Rect(0,0,(counter*2),30)
+        pygame.draw.rect(healthbar_surf, (255,0,0), damage_rect, 0)
+    else:
+        print ("Too many hits! game over")
+        #pygame.quit()
+
 # create a mask for each of them.
 turtle_mask = pygame.mask.from_surface(turtle, 50)
 map_mask = pygame.mask.from_surface(map, 50)
@@ -160,12 +176,15 @@ while going:
             map_rect.y -= speed
         if keys[K_DOWN]:
             map_rect.y += speed
+        counter += 1
+        damage(counter)
         print("COLLISION!")
 
     # draw map + turtle
     screen.blit(map, (map_rect[0], map_rect[1]) )
     screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
     screen.blit(baby, (map_rect[0], map_rect[1]) )
+    screen.blit(healthbar_surf, (10, 10)) #location on screen
     # draw the map rect, so you can see where the bounding rect would be.
     pygame.draw.rect(screen, (0,255,0), map_rect, 1)
 
