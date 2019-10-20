@@ -78,8 +78,8 @@ while going:
     if keys[K_LEFT]:
         keystroke = LEFT
         # print(trash_rect.x)
-        if trash_rect.x +3 <= 0:
-            trash_rect.x += 3
+        if trash_rect.x +7 <= 0:
+            trash_rect.x += 7
         turtle_mask = pygame.mask.from_surface(turtle, 50)
 
         turtle = load_image("turtle_left.png")
@@ -88,8 +88,8 @@ while going:
     if keys[K_RIGHT]:
         # print(trash_rect.x)
         keystroke = RIGHT
-        if trash_rect.x -3 >= boundary_right:
-            trash_rect.x -= 3
+        if trash_rect.x -7 >= boundary_right:
+            trash_rect.x -= 7
         turtle_mask = pygame.mask.from_surface(turtle, 50)
 
         turtle = load_image("turtle_right.png")
@@ -99,8 +99,8 @@ while going:
     if keys[K_UP]:
         # print(trash_rect.y)
         keystroke = UP
-        if trash_rect.y +3 <= 0:
-            trash_rect.y += 3
+        if trash_rect.y +7 <= 0:
+            trash_rect.y += 7
         turtle_mask = pygame.mask.from_surface(turtle, 50)
 
         turtle = load_image("turtle_up.png")
@@ -112,8 +112,8 @@ while going:
         # print(trash_rect.y)
         keystroke = DOWN
 
-        if trash_rect.y -3 >= boundary_down:
-            trash_rect.y -= 3
+        if trash_rect.y -7 >= boundary_down:
+            trash_rect.y -= 7
         turtle_mask = pygame.mask.from_surface(turtle, 50)
 
         turtle = load_image("turtle_down.png")
@@ -143,15 +143,15 @@ while going:
         # we have hit the wall!!!  oh noes!
         #print(keystroke)
         if keys[K_LEFT]:
-            trash_rect.x -= 3
+            trash_rect.x -= 7
 
         if keys[K_RIGHT]:
-            trash_rect.x += 3
+            trash_rect.x += 7
 
         if keys[K_UP]:
-            trash_rect.y -= 3
+            trash_rect.y -= 7
         if keys[K_DOWN]:
-            trash_rect.y += 3
+            trash_rect.y += 7
 
     # draw the background color, and the terrain.
     screen.blit(trash, (trash_rect[0], trash_rect[1]) )
