@@ -8,7 +8,13 @@ import pdb
 
 #pygame.init()
 
-
+    # red=(255,0,0)
+    # green=(0,255,0)
+    #
+    # healthbar_rect = pygame.Rect(0,0,200,30) #green
+    # healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
+    # healthbar_surf.fill((0,255,0))
+    # counter = 0
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 pygame.display.init()
@@ -18,22 +24,39 @@ logo = pygame.image.load("../turtle_left.png")
 pygame.display.set_icon(logo)
 pygame.display.set_caption("Turtles In Trash")
 #self._running = True
-
+healthbar_rect = pygame.Rect(0,0,200,30) #green
+healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
+healthbar_surf.fill((0,255,0))
  #ye = False
-
-
-
+def damage(counter):
+    if counter <100:
+        damage_rect = pygame.Rect(0,0,(counter*2),30)
+        pygame.draw.rect(healthbar_surf, (255,0,0), damage_rect, 0)
+    else:
+        print ("Too many hits! game over")
+        #pygame.quit()
 def load_image(i):
     'load an image from the data directory with per pixel alpha transparency.'
-    return pygame.image.load(os.path.join("../", i)).convert_alpha()
+    return pygame.image.load(os.path.join("..", i)).convert_alpha()
+
+
+
+
+#
+# def load_image(i):
+#     'load an image from the data directory with per pixel alpha transparency.'
+#     return pygame.image.load(os.path.join("../", i)).convert_alpha()
+
+
 
 def on_cleanup():
     pygame.quit()
 
 def on_execute():
+
     going = 1
 
-    speed = 10
+    speed = 15
 
     screen_x = 1450
     screen_y = 800
@@ -52,12 +75,12 @@ def on_execute():
 
     ### MASK CODE TAKEN FROM SAMPLE PROGRAM - https://github.com/illume/pixel_perfect_collision
 
-    turtle = load_image("turtle_right.png")
+    turtle = load_image("turt_right.png")
     map = load_image("map.png")
     baby = load_image("baby.png")
     # map = pygame.transform.scale2x(map)
     ocean = load_image("ocean.png")
-    ocean = pygame.transform.scale2x(ocean)
+    # ocean = pygame.transform.scale2x(ocean)
 
     # create a mask for each of them.
     turtle_mask = pygame.mask.from_surface(turtle, 50)
@@ -91,7 +114,6 @@ def on_execute():
     map_rect[1] = -120
 
     while going:
-        # pygame.init()
         pygame.event.pump()
         keys = pygame.key.get_pressed()
         if keys[QUIT] or keys[K_ESCAPE]:
@@ -102,25 +124,25 @@ def on_execute():
             # print(map_rect.x)
             if map_rect.x + speed <= 0:
                 map_rect.x += speed
-                turtle = load_image("turtle_left.png")
+                turtle = load_image("turt_left.png")
                 # turtle_mask = pygame.mask.from_surface(turtle, 50)
         if keys[K_RIGHT]:
             # print(map_rect.x)
             if map_rect.x - speed >= boundary_right:
                 map_rect.x -= speed
-                turtle = load_image("turtle_right.png")
+                turtle = load_image("turt_right.png")
                 # turtle_mask = pygame.mask.from_surface(turtle, 50)
         if keys[K_UP]:
             # print(map_rect.y)
             if map_rect.y + speed <= 0:
                 map_rect.y += speed
-                # turtle = load_image("turtle_up.png")
+                turtle = load_image("turt_up.png")
                 # turtle_mask = pygame.mask.from_surface(turtle, 50)
         if keys[K_DOWN]:
             # print(map_rect.y)
             if map_rect.y - speed >= boundary_down:
                 map_rect.y -= speed
-                # turtle = load_image("turtle_down.png")
+                turtle = load_image("turt_down.png")
                 # turtle_mask = pygame.mask.from_surface(turtle, 50)
 
 
@@ -129,7 +151,7 @@ def on_execute():
         offset_x = bx - math.floor(screen_x/2-150)#turtle_rect[0]
         offset_y = by - math.floor(screen_y/2-100)#turtle_rect[1]
 
-        cx, cy = (baby_rect[0], baby_rect[1])
+        cx, cy = (map_rect[0], map_rect[1])
         offset_a = cx - math.floor(screen_x/2-150)#turtle_rect[0]
         offset_b = cy - math.floor(screen_y/2-100)#turtle_rect[1]
 
@@ -139,13 +161,14 @@ def on_execute():
 
         #
         last_bx, last_by = bx, by
+        last_cx, last_cy = cx, cy
 
 
         # draw the background color, and the terrain.
-        #screen.fill((7,176,157))
+        screen.fill((7,176,157))
 
         # liquid function for making it liquidy
-        anim = anim + 0.02
+        anim = anim + 0.04
         for x in xblocks:
             xpos = (x + (sin(anim + x * 0.01) * 15)) + 20
             for y in yblocks:
@@ -155,6 +178,14 @@ def on_execute():
         # see if there was an overlap of pixels between the map
         #   and the terrain.
         if touchbaby:
+            if keys[K_LEFT]:
+                map_rect.x -= speed
+            if keys[K_RIGHT]:
+                map_rect.x += speed
+            if keys[K_UP]:
+                map_rect.y -= speed
+            if keys[K_DOWN]:
+                map_rect.y += speed
             print("BABYYYYY")
             #turtle image becomes turtle + baby image?
             #stop baby from moving w the map?
@@ -168,12 +199,20 @@ def on_execute():
                 map_rect.y -= speed
             if keys[K_DOWN]:
                 map_rect.y += speed
+            counter += 1
+            damage(counter)
             print("COLLISION!")
 
         # draw map + turtle
+        red=(255,0,0)
+        green=(0,255,0)
+
+
+        counter = 0
         screen.blit(map, (map_rect[0], map_rect[1]) )
         screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
         screen.blit(baby, (map_rect[0], map_rect[1]) )
+        screen.blit(healthbar_surf, (10, 10)) #location on screen
         # draw the map rect, so you can see where the bounding rect would be.
         pygame.draw.rect(screen, (0,255,0), map_rect, 1)
 
@@ -185,6 +224,7 @@ def on_execute():
         # # limit the frame rate to 40fps.
     # clock.tick(40)
     on_cleanup()
+
 
 def story():
     going = 1
