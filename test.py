@@ -29,8 +29,8 @@ screen_y = 800
 
 def damage(counter):
 
-    if counter <=100:
-        damage_rect = pygame.Rect(0,0,(counter*2),30)
+    if counter <=20:
+        damage_rect = pygame.Rect(0,0,(counter*10),30)
         pygame.draw.rect(healthbar_surf, (255,0,0), damage_rect, 0)
     else:
         return "DEAD"
