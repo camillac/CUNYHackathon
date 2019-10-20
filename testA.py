@@ -21,10 +21,58 @@ healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
 healthbar_surf.fill((0,255,0))
  #ye = False
 
-def bad_ending():
+def good_ending():
     pass
 
-def good_ending():
+def bad_ending():
+    going = 1
+    count = 0
+    screen_x = 1450
+    screen_y = 800
+    going = 1
+    afont = pygame.font.Font(None, 100)
+
+    welcome = afont.render("Oh no, you touched too much trash!", 1, (255, 255, 255))
+
+    wel2 = afont.render("Trash is an issue in the ocean", 1, (255, 255, 255))
+
+    wel3 = afont.render("Click the button to end!", 1, (255, 255, 255))
+    afont = pygame.font.Font(None, 100)
+
+    cl_but = afont.render("Click the button to end", 1, (255, 255, 255))
+
+
+    screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
+    #screen.fill((255,255,255))
+    ocean = load_image("ocean.png")
+    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
+
+    pygame.display.flip()
+    button = pygame.Rect(screen_x/2-200, screen_y/2, 200, 100)
+    while going:
+        screen.blit(welcome, (20,screen_y/9))
+        screen.blit(wel2, (20 ,screen_y/7 + 100))
+        screen.blit(wel3, (200,screen_y/7 + 200))
+
+        screen.blit(cl_but, (90 ,screen_y-70))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos  # gets mouse position
+
+                # checks if mouse position is over the button
+                if button.collidepoint(mouse_pos):
+                    # prints current location of mouse
+                    #ye = True
+                    print('button was pressed at {0}'.format(mouse_pos))
+                    # ye = True
+                    pygame.quit()
+
+            pygame.draw.rect(screen, [52, 88, 235], button)  # draw button
+
+            pygame.display.update()
+
     pass
 
 def damage(counter):
@@ -308,8 +356,8 @@ def starter_page():
                     # prints current location of mouse
                     #ye = True
                     print('button was pressed at {0}'.format(mouse_pos))
-                    # ye = True
-                    story()
+                    #story()
+                    on_execute()
 
             pygame.draw.rect(screen, [255, 0, 0], button)  # draw button
             print("ifjoei")
