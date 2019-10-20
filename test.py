@@ -278,12 +278,14 @@ def end_game(i):
                 #     print('button was pressed at {0}'.format(mouse_pos))
                     # ye = True
                     #story()
-                    screen.blit(second_t ,(screen_x/2-100, screen_y/2+60)) # paint to screen
-                    pygame.display.flip() # paint screen one time
 
                     if i == BAD:
+                        screen.blit(second_t ,(screen_x/2-100, screen_y/2+60)) # paint to screen
+                        pygame.display.flip() # paint screen one time
                         end_game(on_execute())
                     if i == GOOD:
+                        # screen.blit(second_t ,(screen_x/2-100, screen_y/2+60)) # paint to screen
+                        # pygame.display.flip() # paint screen one time
                         webbrowser.open("https://www.seeturtles.org/help-save-turtles")
 
 
@@ -298,8 +300,8 @@ def story():
     going = 1
 
     screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
-    ocean = load_image("ocean.png")
-    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
+    story = load_image("story.png")
+    screen.blit(pygame.transform.scale(story, (1450,800)), (0, 0)) #scales the image to the screen size
 
     pygame.display.flip()
 
