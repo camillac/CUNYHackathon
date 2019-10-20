@@ -20,7 +20,7 @@ main_dir = os.path.split(os.path.abspath(__file__))[0]
 pygame.display.init()
 pygame.font.init()
 
-logo = pygame.image.load("turt_left.png")
+logo = pygame.image.load("turt_right.png")
 pygame.display.set_icon(logo)
 pygame.display.set_caption("Turtles In Trash")
 #self._running = True
@@ -36,6 +36,7 @@ def damage(counter):
     else:
         print ("Too many hits! game over")
         #pygame.quit()
+
 def load_image(i):
     'load an image from the data directory with per pixel alpha transparency.'
     return pygame.image.load(os.path.join(".", i)).convert_alpha()
@@ -66,8 +67,6 @@ def on_execute():
     boundary_right = -3050
     boundary_down = -2200
 
-    #starter_page()
-    print("fheu")
 
     screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
     # set display color as ocean blue
@@ -101,7 +100,7 @@ def on_execute():
     if screen.get_bitsize() == 8:
         screen.set_palette(ocean.get_palette())
     else:
-        ocean = ocean.convert()
+        ocean = ocean.convert_alpha()
 
     anim = 0.0
 
@@ -168,7 +167,6 @@ def on_execute():
         # draw the background color, and the terrain.
         screen.fill((7,176,157))
 
-        # liquid function for making it liquidy
         anim = anim + 0.04
         for x in xblocks:
             xpos = (x + (sin(anim + x * 0.01) * 15)) + 20
@@ -214,6 +212,7 @@ def on_execute():
         screen.blit(map, (map_rect[0], map_rect[1]) )
         screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
         screen.blit(baby, (map_rect[0], map_rect[1]) )
+
         screen.blit(healthbar_surf, (10, 10)) #location on screen
         # draw the map rect, so you can see where the bounding rect would be.
         pygame.draw.rect(screen, (0,255,0), map_rect, 1)
@@ -260,15 +259,12 @@ def story():
 
         screen.blit(cl_but, (90 ,screen_y-70))
         for event in pygame.event.get():
-            print("h")
             if event.type == pygame.QUIT:
                 return False
-                print("no")
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos  # gets mouse position
 
                 # checks if mouse position is over the button
-                print("idjod")
                 if button.collidepoint(mouse_pos):
                     # prints current location of mouse
                     #ye = True
@@ -277,11 +273,8 @@ def story():
                     on_execute()
 
             pygame.draw.rect(screen, [52, 88, 235], button)  # draw button
-            print("ifjoei")
 
             pygame.display.update()
-            print("hue")
-
 
 
 
@@ -308,15 +301,11 @@ def starter_page():
     screen.blit(cl_but, (screen_x/3-100 ,screen_y/3 + 40))
     while going:
         for event in pygame.event.get():
-            print("h")
             if event.type == pygame.QUIT:
                 return False
-                print("no")
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos  # gets mouse position
-
                 # checks if mouse position is over the button
-                print("idjod")
                 if button.collidepoint(mouse_pos):
                     # prints current location of mouse
                     #ye = True
@@ -325,10 +314,8 @@ def starter_page():
                     story()
 
             pygame.draw.rect(screen, [255, 0, 0], button)  # draw button
-            print("ifjoei")
 
             pygame.display.update()
-            print("hue")
 
 
 def main():
