@@ -36,6 +36,7 @@ def damage(counter):
     else:
         print ("Too many hits! game over")
         #pygame.quit()
+
 def load_image(i):
     'load an image from the data directory with per pixel alpha transparency.'
     return pygame.image.load(os.path.join(".", i)).convert_alpha()
@@ -166,7 +167,6 @@ def on_execute():
         # draw the background color, and the terrain.
         screen.fill((7,176,157))
 
-        # liquid function for making it liquidy
         anim = anim + 0.04
         for x in xblocks:
             xpos = (x + (sin(anim + x * 0.01) * 15)) + 20
@@ -212,6 +212,7 @@ def on_execute():
         screen.blit(map, (map_rect[0], map_rect[1]) )
         screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
         screen.blit(baby, (map_rect[0], map_rect[1]) )
+
         screen.blit(healthbar_surf, (10, 10)) #location on screen
         # draw the map rect, so you can see where the bounding rect would be.
         pygame.draw.rect(screen, (0,255,0), map_rect, 1)
