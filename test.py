@@ -20,7 +20,7 @@ main_dir = os.path.split(os.path.abspath(__file__))[0]
 pygame.display.init()
 pygame.font.init()
 
-logo = pygame.image.load("turt_left.png")
+logo = pygame.image.load("turt_right.png")
 pygame.display.set_icon(logo)
 pygame.display.set_caption("Turtles In Trash")
 #self._running = True
@@ -66,8 +66,6 @@ def on_execute():
     boundary_right = -3050
     boundary_down = -2200
 
-    #starter_page()
-    print("fheu")
 
     screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
     # set display color as ocean blue
@@ -101,7 +99,7 @@ def on_execute():
     if screen.get_bitsize() == 8:
         screen.set_palette(ocean.get_palette())
     else:
-        ocean = ocean.convert()
+        ocean = ocean.convert_alpha()
 
     anim = 0.0
 
@@ -260,15 +258,12 @@ def story():
 
         screen.blit(cl_but, (90 ,screen_y-70))
         for event in pygame.event.get():
-            print("h")
             if event.type == pygame.QUIT:
                 return False
-                print("no")
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos  # gets mouse position
 
                 # checks if mouse position is over the button
-                print("idjod")
                 if button.collidepoint(mouse_pos):
                     # prints current location of mouse
                     #ye = True
@@ -277,11 +272,8 @@ def story():
                     on_execute()
 
             pygame.draw.rect(screen, [52, 88, 235], button)  # draw button
-            print("ifjoei")
 
             pygame.display.update()
-            print("hue")
-
 
 
 
@@ -308,15 +300,11 @@ def starter_page():
     screen.blit(cl_but, (screen_x/3-100 ,screen_y/3 + 40))
     while going:
         for event in pygame.event.get():
-            print("h")
             if event.type == pygame.QUIT:
                 return False
-                print("no")
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos  # gets mouse position
-
                 # checks if mouse position is over the button
-                print("idjod")
                 if button.collidepoint(mouse_pos):
                     # prints current location of mouse
                     #ye = True
@@ -325,10 +313,8 @@ def starter_page():
                     story()
 
             pygame.draw.rect(screen, [255, 0, 0], button)  # draw button
-            print("ifjoei")
 
             pygame.display.update()
-            print("hue")
 
 
 def main():
