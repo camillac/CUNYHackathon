@@ -268,43 +268,75 @@ def story():
 def starter_page():
     pygame.init()
 
-    print("f")
+    # print("f")
     screen_x = 1450
     screen_y = 800
     going = 1
-    afont = pygame.font.Font(None, 150)
+    myfont = pygame.font.SysFont("KAUSHAN SCRIPT",150)
 
-    welcome = afont.render("Welcome to Turtles In Trash!", 1, (7,176,157))
-    afont = pygame.font.Font(None, 100)
+    welcome = myfont.render("Welcome to Turtles In Trash!", 1, (255,255,255))
+    myfont = pygame.font.SysFont("KAUSHAN SCRIPT",100)
 
-    cl_but = afont.render("Click the button to play", 1, (7,176,157))
+    cl_but = myfont.render("Click the button to play", 1, (255,255,255))
+
 
 
     screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
-    screen.fill((255,255,255))
-    pygame.display.flip()
-    button = pygame.Rect(screen_x/2-200, screen_y/2, 400, 200)
-    screen.blit(welcome, (0,screen_y/4))
-    screen.blit(cl_but, (screen_x/3-100 ,screen_y/3 + 40))
+    ocean = load_image("ocean.png")
+    redSquare = pygame.image.load("turt_right.png").convert_alpha()
+    pygame.transform.scale2x(redSquare)
+    redSquare_rect = redSquare.get_rect()
+    redSquare_rect.x = screen_x/2
+    redSquare_rect.y = screen_y/2 +20
+
+    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size    pygame.display.flip()
+    button = pygame.Rect(screen_x/2-50, screen_y/2+60, 200, 200)
+    # screen.blit(welcome, (0,screen_y/4))
+    # screen.blit(cl_but, (screen_x/3-100 ,screen_y/3 + 40))
+    welc = load_image("welcome")
+    screen.blit(welc, (0, 0)) #scales the image to the screen size    pygame.display.flip()
+
+    screen.blit(redSquare ,(screen_x/2-50, screen_y/2+60)) # paint to screen
+    print(screen_x/2)
+    print(screen_y+100)
+    pygame.display.flip() # paint screen one time
+
+
     while going:
         for event in pygame.event.get():
+            # print("h")
             if event.type == pygame.QUIT:
                 return False
+                # print("no")
             if event.type == pygame.MOUSEBUTTONDOWN:
+                print("he")
                 mouse_pos = event.pos  # gets mouse position
+
                 # checks if mouse position is over the button
+                # print("idjod")
+                print(mouse_pos)
+                print(redSquare_rect.x)
+                print(redSquare_rect.y)
+                print(redSquare_rect)
+
+
+                x, y = event.pos
+
                 if button.collidepoint(mouse_pos):
-                    # prints current location of mouse
-                    #ye = True
-                    print('button was pressed at {0}'.format(mouse_pos))
+                    print('clicked on image')
+                # if button.get_rect().collidepoint(mouse_pos):
+                #     # prints current location of mouse
+                #     #ye = True
+                #     print('button was pressed at {0}'.format(mouse_pos))
+                    # ye = True
                     #story()
                     on_execute()
 
-            pygame.draw.rect(screen, [255, 0, 0], button)  # draw button
+            # pygame.draw.rect(screen, [255, 0, 0], redSquare)  # draw button
+
+            # print("ifjoei")
 
             pygame.display.update()
-
-
 def main():
     starter_page()
 
