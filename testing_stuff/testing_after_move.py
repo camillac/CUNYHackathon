@@ -20,7 +20,7 @@ main_dir = os.path.split(os.path.abspath(__file__))[0]
 pygame.display.init()
 pygame.font.init()
 
-logo = pygame.image.load("../turtle_left.png")
+logo = pygame.image.load("../turt_left.png")
 pygame.display.set_icon(logo)
 pygame.display.set_caption("Turtles In Trash")
 #self._running = True
@@ -29,7 +29,8 @@ healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
 healthbar_surf.fill((0,255,0))
  #ye = False
 def damage(counter):
-    if counter <100:
+
+    if counter <=100:
         damage_rect = pygame.Rect(0,0,(counter*2),30)
         pygame.draw.rect(healthbar_surf, (255,0,0), damage_rect, 0)
     else:
@@ -53,7 +54,7 @@ def on_cleanup():
     pygame.quit()
 
 def on_execute():
-
+    counter = 0
     going = 1
 
     speed = 15
@@ -199,8 +200,9 @@ def on_execute():
                 map_rect.y -= speed
             if keys[K_DOWN]:
                 map_rect.y += speed
-            counter += 1
+            counter +=1
             damage(counter)
+            print(counter)
             print("COLLISION!")
 
         # draw map + turtle
@@ -208,7 +210,7 @@ def on_execute():
         green=(0,255,0)
 
 
-        counter = 0
+        #counter = 0
         screen.blit(map, (map_rect[0], map_rect[1]) )
         screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
         screen.blit(baby, (map_rect[0], map_rect[1]) )
@@ -332,10 +334,5 @@ def starter_page():
 def main():
     starter_page()
 
-    #if ye:
-    #    on_execute()
-    # print(ye)
-    # if ye:
-    #     on_execute()
 
 main()
