@@ -52,7 +52,7 @@ healthbar_surf.fill((0,255,0))
 counter = 0
 
 def damage(counter):
-    if counter =<100:
+    if counter <= 100:
         damage_rect = pygame.Rect(0,0,(counter*2),30)
         pygame.draw.rect(healthbar_surf, (255,0,0), damage_rect, 0)
     else:
