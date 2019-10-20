@@ -20,10 +20,80 @@ healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
 healthbar_surf.fill((0,255,0))
 
 def bad_ending():
-    pass
+    going = 1
+    count = 0
+    screen_x = 1450
+    screen_y = 800
+    going = 1
+
+    screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
+    #screen.fill((255,255,255))
+    ocean = load_image("bad.png")
+    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
+
+    pygame.display.flip()
+    button = pygame.Rect(screen_x/2-200, screen_y/2, 200, 100)
+    while going:
+        for event in pygame.event.get():
+            print("h")
+            if event.type == pygame.QUIT:
+                return False
+                print("no")
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos  # gets mouse position
+
+                # checks if mouse position is over the button
+                print("idjod")
+                if button.collidepoint(mouse_pos):
+                    # prints current location of mouse
+                    #ye = True
+                    print('button was pressed at {0}'.format(mouse_pos))
+                    # ye = True
+                    on_cleanup()
+
+            pygame.draw.rect(screen, [52, 88, 235], button)  # draw button
+            print("ifjoei")
+
+            pygame.display.update()
+            print("hue")
 
 def good_ending():
-    pass
+    going = 1
+    count = 0
+    screen_x = 1450
+    screen_y = 800
+    going = 1
+
+    screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
+    #screen.fill((255,255,255))
+    ocean = load_image("good.png")
+    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
+
+    pygame.display.flip()
+    button = pygame.Rect(screen_x/2-200, screen_y/2, 200, 100)
+    while going:
+        for event in pygame.event.get():
+            print("h")
+            if event.type == pygame.QUIT:
+                return False
+                print("no")
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos  # gets mouse position
+
+                # checks if mouse position is over the button
+                print("idjod")
+                if button.collidepoint(mouse_pos):
+                    # prints current location of mouse
+                    #ye = True
+                    print('button was pressed at {0}'.format(mouse_pos))
+                    # ye = True
+                    on_cleanup()
+
+            pygame.draw.rect(screen, [52, 88, 235], button)  # draw button
+            print("ifjoei")
+
+            pygame.display.update()
+            print("hue")
 
 def damage(counter):
 
