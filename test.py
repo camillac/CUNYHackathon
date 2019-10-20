@@ -17,7 +17,7 @@ pygame.display.set_caption("Turtles In Trash")
 
 going = 1
 
-speed = 10
+speed = 15
 
 screen_x = 1450
 screen_y = 800
@@ -36,12 +36,12 @@ def load_image(i):
     'load an image from the data directory with per pixel alpha transparency.'
     return pygame.image.load(os.path.join(".", i)).convert_alpha()
 
-turtle = load_image("turtle_right.png")
+turtle = load_image("turt_right.png")
 map = load_image("map.png")
 baby = load_image("baby.png")
 # map = pygame.transform.scale2x(map)
 ocean = load_image("ocean.png")
-ocean = pygame.transform.scale2x(ocean)
+# ocean = pygame.transform.scale2x(ocean)
 
 # create a mask for each of them.
 turtle_mask = pygame.mask.from_surface(turtle, 50)
@@ -85,25 +85,25 @@ while going:
         # print(map_rect.x)
         if map_rect.x + speed <= 0:
             map_rect.x += speed
-            turtle = load_image("turtle_left.png")
+            turtle = load_image("turt_left.png")
             # turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_RIGHT]:
         # print(map_rect.x)
         if map_rect.x - speed >= boundary_right:
             map_rect.x -= speed
-            turtle = load_image("turtle_right.png")
+            turtle = load_image("turt_right.png")
             # turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_UP]:
         # print(map_rect.y)
         if map_rect.y + speed <= 0:
             map_rect.y += speed
-            # turtle = load_image("turtle_up.png")
+            turtle = load_image("turt_up.png")
             # turtle_mask = pygame.mask.from_surface(turtle, 50)
     if keys[K_DOWN]:
         # print(map_rect.y)
         if map_rect.y - speed >= boundary_down:
             map_rect.y -= speed
-            # turtle = load_image("turtle_down.png")
+            turtle = load_image("turt_down.png")
             # turtle_mask = pygame.mask.from_surface(turtle, 50)
 
 
@@ -112,7 +112,7 @@ while going:
     offset_x = bx - math.floor(screen_x/2-150)#turtle_rect[0]
     offset_y = by - math.floor(screen_y/2-100)#turtle_rect[1]
 
-    cx, cy = (baby_rect[0], baby_rect[1])
+    cx, cy = (map_rect[0], map_rect[1])
     offset_a = cx - math.floor(screen_x/2-150)#turtle_rect[0]
     offset_b = cy - math.floor(screen_y/2-100)#turtle_rect[1]
 
@@ -122,13 +122,14 @@ while going:
 
     #
     last_bx, last_by = bx, by
+    last_cx, last_cy = cx, cy
 
 
     # draw the background color, and the terrain.
     screen.fill((7,176,157))
 
     # liquid function for making it liquidy
-    anim = anim + 0.02
+    anim = anim + 0.04
     for x in xblocks:
         xpos = (x + (sin(anim + x * 0.01) * 15)) + 20
         for y in yblocks:
@@ -138,6 +139,14 @@ while going:
     # see if there was an overlap of pixels between the map
     #   and the terrain.
     if touchbaby:
+        if keys[K_LEFT]:
+            map_rect.x -= speed
+        if keys[K_RIGHT]:
+            map_rect.x += speed
+        if keys[K_UP]:
+            map_rect.y -= speed
+        if keys[K_DOWN]:
+            map_rect.y += speed
         print("BABYYYYY")
         #turtle image becomes turtle + baby image?
         #stop baby from moving w the map?
