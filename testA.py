@@ -19,6 +19,9 @@ pygame.display.set_caption("Turtles In Trash")
 healthbar_rect = pygame.Rect(0,0,200,30) #green
 healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
 healthbar_surf.fill((0,255,0))
+
+tryagain = False
+quit = False
  #ye = False
 
 def good_ending():
@@ -39,7 +42,7 @@ def bad_ending():
     wel3 = afont.render("Click the button to end!", 1, (255, 255, 255))
     afont = pygame.font.Font(None, 100)
 
-    cl_but = afont.render("Click the button to end", 1, (255, 255, 255))
+    cl_but = afont.render("Click left button to end, right to try again", 1, (255, 255, 255))
 
 
     screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
@@ -48,7 +51,9 @@ def bad_ending():
     screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
 
     pygame.display.flip()
-    button = pygame.Rect(screen_x/2-200, screen_y/2, 200, 100)
+    button1 = pygame.Rect(screen_x/2-200, screen_y/2, 200, 100) #left
+    button2 = pygame.Rect(screen_x/2, screen_y/2, 200, 100) #right
+    pass1=False
     while going:
         screen.blit(welcome, (20,screen_y/9))
         screen.blit(wel2, (20 ,screen_y/7 + 100))
@@ -62,17 +67,29 @@ def bad_ending():
                 mouse_pos = event.pos  # gets mouse position
 
                 # checks if mouse position is over the button
-                if button.collidepoint(mouse_pos):
+                if button1.collidepoint(mouse_pos):
                     # prints current location of mouse
-                    #ye = True
-                    print('button was pressed at {0}'.format(mouse_pos))
-                    # ye = True
-                    pygame.quit()
 
-            pygame.draw.rect(screen, [52, 88, 235], button)  # draw button
+                    print('button1 was pressed at {0}'.format(mouse_pos))
+
+                    quit = True
+                    pass1=True
+                    pass
+                if button2.collidepoint(mouse_pos):
+                    # prints current location of mouse
+
+                    print('button2 was pressed at {0}'.format(mouse_pos))
+
+                    tryagain= True
+                    pass1=True
+                    pass
+
+            pygame.draw.rect(screen, [255,0,0], button1)  # draw button
+            pygame.draw.rect(screen, [0,255,0], button2)  # draw button
 
             pygame.display.update()
-
+        if pass1 == True:
+            break
     pass
 
 def damage(counter):
@@ -243,6 +260,13 @@ def on_execute():
             damage(counter)
             print(counter)
             print("COLLISION!")
+            if tryagain:
+                counter = 0
+                damage(counter)
+                pass #reset the damage and turtle location
+            if quit:
+                on_cleanup()
+
 
         # draw map + turtle
         red=(255,0,0)
