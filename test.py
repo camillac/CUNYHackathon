@@ -38,7 +38,7 @@ def damage(counter):
         #pygame.quit()
 def load_image(i):
     'load an image from the data directory with per pixel alpha transparency.'
-    return pygame.image.load(os.path.join("..", i)).convert_alpha()
+    return pygame.image.load(os.path.join(".", i)).convert_alpha()
 
 
 
