@@ -11,89 +11,20 @@ main_dir = os.path.split(os.path.abspath(__file__))[0]
 pygame.display.init()
 pygame.font.init()
 
-logo = pygame.image.load("turt_right.png")
+logo = pygame.image.load("images/turt_right.png")
 pygame.display.set_icon(logo)
-pygame.display.set_caption("Turtles In Trash")
+pygame.display.set_caption("Turtles In Trouble")
 #self._running = True
 healthbar_rect = pygame.Rect(0,0,200,30) #green
 healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
 healthbar_surf.fill((0,255,0))
 
-def bad_ending():
-    going = 1
-    count = 0
-    screen_x = 1450
-    screen_y = 800
-    going = 1
+GOOD = 1
+BAD = 2
+QUIT = 0
 
-    screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
-    #screen.fill((255,255,255))
-    ocean = load_image("bad.png")
-    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
-
-    pygame.display.flip()
-    button = pygame.Rect(screen_x/2-200, screen_y/2, 200, 100)
-    while going:
-        for event in pygame.event.get():
-            print("h")
-            if event.type == pygame.QUIT:
-                return False
-                print("no")
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = event.pos  # gets mouse position
-
-                # checks if mouse position is over the button
-                print("idjod")
-                if button.collidepoint(mouse_pos):
-                    # prints current location of mouse
-                    #ye = True
-                    print('button was pressed at {0}'.format(mouse_pos))
-                    # ye = True
-                    on_cleanup()
-
-            pygame.draw.rect(screen, [52, 88, 235], button)  # draw button
-            print("ifjoei")
-
-            pygame.display.update()
-            print("hue")
-
-def good_ending():
-    going = 1
-    count = 0
-    screen_x = 1450
-    screen_y = 800
-    going = 1
-
-    screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
-    #screen.fill((255,255,255))
-    ocean = load_image("good.png")
-    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size
-
-    pygame.display.flip()
-    button = pygame.Rect(screen_x/2-200, screen_y/2, 200, 100)
-    while going:
-        for event in pygame.event.get():
-            print("h")
-            if event.type == pygame.QUIT:
-                return False
-                print("no")
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = event.pos  # gets mouse position
-
-                # checks if mouse position is over the button
-                print("idjod")
-                if button.collidepoint(mouse_pos):
-                    # prints current location of mouse
-                    #ye = True
-                    print('button was pressed at {0}'.format(mouse_pos))
-                    # ye = True
-                    on_cleanup()
-
-            pygame.draw.rect(screen, [52, 88, 235], button)  # draw button
-            print("ifjoei")
-
-            pygame.display.update()
-            print("hue")
+screen_x = 1450
+screen_y = 800
 
 def damage(counter):
 
@@ -101,13 +32,13 @@ def damage(counter):
         damage_rect = pygame.Rect(0,0,(counter*2),30)
         pygame.draw.rect(healthbar_surf, (255,0,0), damage_rect, 0)
     else:
-        bad_ending()
-        print ("Too many hits! game over")
+        return "DEAD"
+        # print ("Too many hits! game over")
         #pygame.quit()
 
 def load_image(i):
     'load an image from the data directory with per pixel alpha transparency.'
-    return pygame.image.load(os.path.join(".", i)).convert_alpha()
+    return pygame.image.load(os.path.join("images", i)).convert_alpha()
 
 def on_cleanup():
     pygame.quit()
@@ -115,11 +46,11 @@ def on_cleanup():
 def on_execute():
     counter = 0
     going = 1
+    damage_rect = pygame.Rect(0,0,0,30)
+    healthbar_surf.fill((0,255,0))
 
     speed = 15
 
-    screen_x = 1450
-    screen_y = 800
     boundary_left = 725
     boundary_up = -400
     boundary_right = -3050
@@ -128,7 +59,7 @@ def on_execute():
 
     screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
     # set display color as ocean blue
-    screen.fill((7,176,157))
+    screen.fill((61,187,209))
     pygame.display.flip()
 
     ### MASK CODE TAKEN FROM SAMPLE PROGRAM - https://github.com/illume/pixel_perfect_collision
@@ -151,12 +82,6 @@ def on_execute():
     baby_rect = baby.get_rect()
     garbage_rect = garbage.get_rect() #NEW
 
-    # a message for if the map hits the terrain.
-    afont = pygame.font.Font(None, 16)
-    hitsurf = afont.render("Hit!!!  Oh noes!!", 1, (255,255,255))
-    boundr = afont.render("Can't move anymore", 1, (255,255,255))
-
-
     if screen.get_bitsize() == 8:
         screen.set_palette(ocean.get_palette())
     else:
@@ -177,8 +102,7 @@ def on_execute():
         pygame.event.pump()
         keys = pygame.key.get_pressed()
         if keys[QUIT] or keys[K_ESCAPE]:
-            going = 0
-
+            exit()
         # move the map around, depending on the keys.
         if keys[K_LEFT]:
             # print(map_rect.x)
@@ -222,7 +146,7 @@ def on_execute():
 
 
         # draw the background color, and the terrain.
-        screen.fill((7,176,157))
+        screen.fill((61,187,209))
 
         anim = anim + 0.04
         for x in xblocks:
@@ -242,8 +166,8 @@ def on_execute():
                 map_rect.y -= speed
             if keys[K_DOWN]:
                 map_rect.y += speed
-            print("BABYYYYY")
-            good_ending()
+            # print("BABYYYYY")
+            return GOOD
             #turtle image becomes turtle + baby image?
             #stop baby from moving w the map?
         if overlap:
@@ -257,10 +181,11 @@ def on_execute():
             if keys[K_DOWN]:
                 map_rect.y += speed
             counter +=1
-            damage(counter)
-            print(counter)
-            print("COLLISION!")
-        if hitwall: #NEW
+            if damage(counter) == "DEAD":
+                return BAD
+            # print(counter)
+            # print("COLLISION!")
+        elif hitwall: #NEW
             if keys[K_LEFT]:
                 map_rect.x -= speed
             if keys[K_RIGHT]:
@@ -298,9 +223,6 @@ def on_execute():
 def story():
     going = 1
     count = 0
-    screen_x = 1450
-    screen_y = 800
-    going = 1
     afont = pygame.font.Font(None, 150)
 
     welcome = afont.render("Help Josie get to her baby!", 1, (138, 203, 230))
@@ -336,7 +258,7 @@ def story():
                 if button.collidepoint(mouse_pos):
                     # prints current location of mouse
                     #ye = True
-                    print('button was pressed at {0}'.format(mouse_pos))
+                    # print('button was pressed at {0}'.format(mouse_pos))
                     # ye = True
                     on_execute()
 
@@ -344,85 +266,149 @@ def story():
 
             pygame.display.update()
 
-def starter_page():
-    pygame.init()
+def end_game(i):
 
-    # print("f")
-    screen_x = 1450
-    screen_y = 800
     going = 1
-    myfont = pygame.font.SysFont("KAUSHAN SCRIPT",150)
-
-    welcome = myfont.render("Welcome to Turtles In Trash!", 1, (255,255,255))
-    myfont = pygame.font.SysFont("KAUSHAN SCRIPT",100)
-
-    cl_but = myfont.render("Click the button to play", 1, (255,255,255))
-
-
 
     screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
-    ocean = load_image("ocean.png")
-    redSquare = pygame.image.load("turt_right.png").convert_alpha()
+
+    if i == BAD:
+        end = load_image("bad.png")
+    elif i == GOOD:
+        end = load_image("good.png")
+    redSquare = pygame.image.load("images/turt_right.png").convert_alpha()
     pygame.transform.scale2x(redSquare)
     redSquare_rect = redSquare.get_rect()
     redSquare_rect.x = screen_x/2
     redSquare_rect.y = screen_y/2 +20
-    second_t = pygame.image.load("turt_light.png").convert_alpha()
+    second_t = pygame.image.load("images/turt_light.png").convert_alpha()
     pygame.transform.scale2x(second_t)
 
 
-    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size    pygame.display.flip()
-    button = pygame.Rect(screen_x/2-50, screen_y/2+60, 200, 200)
+    screen.blit(pygame.transform.scale(end, (1450,800)), (0, 0)) #scales the image to the screen size    pygame.display.flip()
+    button = pygame.Rect(screen_x/2-85, screen_y/2+60, 200, 200)
     # screen.blit(welcome, (0,screen_y/4))
     # screen.blit(cl_but, (screen_x/3-100 ,screen_y/3 + 40))
-    welc = load_image("welcome")
-    screen.blit(welc, (0, 0)) #scales the image to the screen size    pygame.display.flip()
 
-    screen.blit(redSquare ,(screen_x/2-50, screen_y/2+60)) # paint to screen
-    print(screen_x/2)
-    print(screen_y+100)
+    screen.blit(redSquare ,(screen_x/2-85, screen_y/2+60)) # paint to screen
+    # print(screen_x/2)
+    # print(screen_y+100)
     pygame.display.flip() # paint screen one time
 
 
     while going:
+        keys = pygame.key.get_pressed()
+        if keys[QUIT] or keys[K_ESCAPE]:
+            going = 0
         for event in pygame.event.get():
-            # print("h")
             if event.type == pygame.QUIT:
                 return False
-                # print("no")
             if event.type == pygame.MOUSEBUTTONDOWN:
-                print("he")
                 mouse_pos = event.pos  # gets mouse position
 
                 # checks if mouse position is over the button
-                # print("idjod")
-                print(mouse_pos)
-                print(redSquare_rect.x)
-                print(redSquare_rect.y)
-                print(redSquare_rect)
+                # print(mouse_pos)
+                # print(redSquare_rect.x)
+                # print(redSquare_rect.y)
+                # print(redSquare_rect)
 
 
                 x, y = event.pos
 
                 if button.collidepoint(mouse_pos):
-                    print('clicked on image')
+
                 # if button.get_rect().collidepoint(mouse_pos):
                 #     # prints current location of mouse
                 #     #ye = True
                 #     print('button was pressed at {0}'.format(mouse_pos))
                     # ye = True
                     #story()
-                    screen.blit(second_t ,(screen_x/2-50, screen_y/2+60)) # paint to screen
+                    screen.blit(second_t ,(screen_x/2-85, screen_y/2+60)) # paint to screen
                     pygame.display.flip() # paint screen one time
 
 
-                    on_execute()
+                    end_game(on_execute())
 
             # pygame.draw.rect(screen, [255, 0, 0], redSquare)  # draw button
 
             # print("ifjoei")
 
             pygame.display.update()
+
+
+
+def starter_page():
+    pygame.init()
+
+    going = 1
+
+    screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
+    ocean = load_image("ocean2.png")
+    redSquare = pygame.image.load("images/turt_right.png").convert_alpha()
+    pygame.transform.scale2x(redSquare)
+    redSquare_rect = redSquare.get_rect()
+    redSquare_rect.x = screen_x/2
+    redSquare_rect.y = screen_y/2 +20
+    second_t = pygame.image.load("images/turt_light.png").convert_alpha()
+    pygame.transform.scale2x(second_t)
+
+
+    screen.blit(pygame.transform.scale(ocean, (1450,800)), (0, 0)) #scales the image to the screen size    pygame.display.flip()
+    button = pygame.Rect(screen_x/2-100, screen_y/2+60, 200, 200)
+    # screen.blit(welcome, (0,screen_y/4))
+    # screen.blit(cl_but, (screen_x/3-100 ,screen_y/3 + 40))
+    welc = load_image("welcome.png")
+    screen.blit(welc, (0, 0)) #scales the image to the screen size    pygame.display.flip()
+
+    screen.blit(redSquare ,(screen_x/2-100, screen_y/2+60)) # paint to screen
+    # print(screen_x/2)
+    # print(screen_y+100)
+    pygame.display.flip() # paint screen one time
+
+
+    while going:
+        keys = pygame.key.get_pressed()
+        if keys[QUIT] or keys[K_ESCAPE]:
+            going = 0
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+                # print("no")
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # print("he")
+                mouse_pos = event.pos  # gets mouse position
+
+                # checks if mouse position is over the button
+                # print("idjod")
+                # print(mouse_pos)
+                # print(redSquare_rect.x)
+                # print(redSquare_rect.y)
+                # print(redSquare_rect)
+
+
+                x, y = event.pos
+
+                if button.collidepoint(mouse_pos):
+                    # print('clicked on image')
+                # if button.get_rect().collidepoint(mouse_pos):
+                #     # prints current location of mouse
+                #     #ye = True
+                #     print('button was pressed at {0}'.format(mouse_pos))
+                    # ye = True
+                    #story()
+                    screen.blit(second_t ,(screen_x/2-100, screen_y/2+60)) # paint to screen
+                    pygame.display.flip() # paint screen one time
+
+
+                    end_game(on_execute())
+
+            # pygame.draw.rect(screen, [255, 0, 0], redSquare)  # draw button
+
+            # print("ifjoei")
+
+            pygame.display.update()
+
+
 def main():
     starter_page()
 
