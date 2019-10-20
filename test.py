@@ -6,15 +6,6 @@ from pygame.locals import *
 import time
 import pdb
 
-#pygame.init()
-
-    # red=(255,0,0)
-    # green=(0,255,0)
-    #
-    # healthbar_rect = pygame.Rect(0,0,200,30) #green
-    # healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
-    # healthbar_surf.fill((0,255,0))
-    # counter = 0
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 pygame.display.init()
@@ -27,29 +18,26 @@ pygame.display.set_caption("Turtles In Trash")
 healthbar_rect = pygame.Rect(0,0,200,30) #green
 healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
 healthbar_surf.fill((0,255,0))
- #ye = False
+
+def bad_ending():
+    pass
+
+def good_ending():
+    pass
+
 def damage(counter):
 
     if counter <=100:
         damage_rect = pygame.Rect(0,0,(counter*2),30)
         pygame.draw.rect(healthbar_surf, (255,0,0), damage_rect, 0)
     else:
+        bad_ending()
         print ("Too many hits! game over")
         #pygame.quit()
 
 def load_image(i):
     'load an image from the data directory with per pixel alpha transparency.'
     return pygame.image.load(os.path.join(".", i)).convert_alpha()
-
-
-
-
-#
-# def load_image(i):
-#     'load an image from the data directory with per pixel alpha transparency.'
-#     return pygame.image.load(os.path.join("../", i)).convert_alpha()
-
-
 
 def on_cleanup():
     pygame.quit()
@@ -186,6 +174,7 @@ def on_execute():
             if keys[K_DOWN]:
                 map_rect.y += speed
             print("BABYYYYY")
+            good_ending()
             #turtle image becomes turtle + baby image?
             #stop baby from moving w the map?
         if overlap:
@@ -276,8 +265,6 @@ def story():
 
             pygame.display.update()
 
-
-
 def starter_page():
     pygame.init()
 
@@ -310,8 +297,8 @@ def starter_page():
                     # prints current location of mouse
                     #ye = True
                     print('button was pressed at {0}'.format(mouse_pos))
-                    # ye = True
-                    story()
+                    #story()
+                    on_execute()
 
             pygame.draw.rect(screen, [255, 0, 0], button)  # draw button
 
