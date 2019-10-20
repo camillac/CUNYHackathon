@@ -1,123 +1,190 @@
-
-# import the pygame module, so you can use it
-from pygame.locals import *
+import os
 import pygame
+import math
+from math import sin
+from pygame.locals import *
+import time
+
+main_dir = os.path.split(os.path.abspath(__file__))[0]
+
+pygame.display.init()
+pygame.font.init()
+
+logo = pygame.image.load("turtle_left.png")
+pygame.display.set_icon(logo)
+pygame.display.set_caption("Turtles In Trash")
 
 
+going = 1
 
-class Player:
-        x = 250
-        y = 200
-        #speed = 1
+speed = 10
 
-        def turnRight(self):
-            #self.x = self.x + self.speed
-            pygame.transform.rotate(self,90)
+screen_x = 1450
+screen_y = 800
+boundary_left = 725
+boundary_up = -400
+boundary_right = -1560
+boundary_down = -1200
 
-        def turnLeft(self):
-            #self.x = self.x - self.speed
-            rot_center()
+screen = pygame.display.set_mode((screen_x,screen_y), HWSURFACE | DOUBLEBUF) #sets the display screen
+# set display color as ocean blue
+screen.fill((7,176,157))
+pygame.display.flip()
 
-        def turnUp(self):
-            #self.y = self.y - self.speed
-            rot_center()
+### MASK CODE TAKEN FROM SAMPLE PROGRAM - https://github.com/illume/pixel_perfect_collision
+def load_image(i):
+    'load an image from the data directory with per pixel alpha transparency.'
+    return pygame.image.load(os.path.join(".", i)).convert_alpha()
 
-        def turnDown(self):
-            #self.y = self.y + self.speed
-            rot_center()
+turtle = load_image("turtle_right.png")
+map = load_image("map.png")
+baby = load_image("baby.png")
+# map = pygame.transform.scale2x(map)
+ocean = load_image("ocean.png")
+ocean = pygame.transform.scale2x(ocean)
 
-class Trash:
-        x = 100
-        y = 10
+red=(255,0,0)
+green=(0,255,0)
 
-class Game:
-    # def isCollision(self,x1,y1,x2,y2,bsize):
-    #     if x1 >= x2 and x1 <= x2 + bsize:
-    #         if y1 >= y2 and y1 <= y2 + bsize:
-    #             return True
-    #     return False
-    def rot_center(image, angle):
-        #def rot_center(image, rect, angle):
-        """rotate an image while keeping its center"""
-        rot_image = pygame.transform.rotate(image[x], image[y], angle)
-        #rot_rect = rot_image.get_rect(center=rect.center)
-        return rot_image #,rot_rect
+healthbar_rect = pygame.Rect(0,0,100,20) #green
+healthbar_surf= pygame.Surface((healthbar_rect[2], healthbar_rect[3]))
+healthbar_surf.fill((0,255,0))
+counter = 0
 
+def damage(counter):
+    if counter <25:
+        damage_rect = pygame.Rect(0,0,(counter*5),20)
+        pygame.draw.rect(healthbar_surf, (255,0,0), damage_rect, 0)
+    else:
+        print ("Too many hits! game over")
+        #pygame.quit()
 
-class App:
+# create a mask for each of them.
+turtle_mask = pygame.mask.from_surface(turtle, 50)
+map_mask = pygame.mask.from_surface(map, 50)
+baby_mask = pygame.mask.from_surface(baby, 50)
 
-        windowWidth = 800
-        windowHeight = 600
-        player = 0
+turtle_rect = turtle.get_rect()
+map_rect = map.get_rect()
+baby_rect = baby.get_rect()
 
-        def __init__(self):
-            self._running = True
-            self._display_surf = None
-            self._image_surf = None
-            self._image_surf1 = None
-            self.player = Player()
-            self.trash= Trash()
-            self.game = Game()
-
-        def on_init(self):
-            pygame.init()
-            self._display_surf = pygame.display.set_mode((self.windowWidth,self.windowHeight), pygame.HWSURFACE)
-
-            pygame.display.set_caption('Pygame pythonspot.com example')
-            self._running = True
-            self._image_surf = pygame.image.load("turtle.png").convert()
-            self._image_surf1 = pygame.image.load("trash.png").convert()
-
-        def on_event(self, event):
-            if event.type == QUIT:
-                self._running = False
-
-        def on_loop(self): #COLLISION STUFF UNNECESSARY
-            # does snake eat apple?
-            # #for i in range(0,self.player.length):
-            #     if self.game.isCollision(self.trash.x,self.trash.y,self.player.x, self.player.y,44):
-            #         print ("You lose! collision!")
-            pass
-
-        def on_render(self):
-            self._display_surf.fill((0,0,0))
-            self._display_surf.blit(self._image_surf,(self.player.x,self.player.y))
-            pygame.display.flip()
-
-        def on_cleanup(self):
-            pygame.quit()
-
-        def on_execute(self):
-            if self.on_init() == False:
-                self._running = False
-
-            while( self._running ):
-                pygame.event.pump()
-                keys = pygame.key.get_pressed()
-
-                if (keys[K_RIGHT]):
-                    self.game.rot_center(self.player, 90)
-
-                if (keys[K_LEFT]):
-                    self.player.turnLeft()
-
-                if (keys[K_UP]):
-                    self.player.turnUp()
-
-                if (keys[K_DOWN]):
-                    self.player.turnDown()
-
-                if (keys[K_ESCAPE]):
-                    self._running = False
-
-                self.on_loop()
-                self.on_render()
-            self.on_cleanup()
+# a message for if the map hits the terrain.
+afont = pygame.font.Font(None, 16)
+hitsurf = afont.render("Hit!!!  Oh noes!!", 1, (255,255,255))
+boundr = afont.render("Can't move anymore", 1, (255,255,255))
 
 
-# run the main function only if this module is executed as the main script
-# (if you import this as a module then nothing is executed)
-if __name__=="__main__":
-    # call the main function
-    theApp = App()
-    theApp.on_execute()
+if screen.get_bitsize() == 8:
+    screen.set_palette(ocean.get_palette())
+else:
+    ocean = ocean.convert()
+
+anim = 0.0
+
+# mainloop
+xblocks = range(0, screen_x, 20)
+yblocks = range(0, screen_y, 20)
+
+# start the main loop.
+
+map_rect[0] = -100
+map_rect[1] = -100
+
+while going:
+    pygame.event.pump()
+    keys = pygame.key.get_pressed()
+    if keys[QUIT] or keys[K_ESCAPE]:
+        going = 0
+
+    # move the map around, depending on the keys.
+    if keys[K_LEFT]:
+        # print(map_rect.x)
+        if map_rect.x + speed <= 0:
+            map_rect.x += speed
+            turtle = load_image("turtle_left.png")
+            turtle_mask = pygame.mask.from_surface(turtle, 50)
+    if keys[K_RIGHT]:
+        # print(map_rect.x)
+        if map_rect.x - speed >= boundary_right:
+            map_rect.x -= speed
+            turtle = load_image("turtle_right.png")
+            turtle_mask = pygame.mask.from_surface(turtle, 50)
+    if keys[K_UP]:
+        # print(map_rect.y)
+        if map_rect.y + speed <= 0:
+            map_rect.y += speed
+            # turtle = load_image("turtle_up.png")
+            # turtle_mask = pygame.mask.from_surface(turtle, 50)
+    if keys[K_DOWN]:
+        # print(map_rect.y)
+        if map_rect.y - speed >= boundary_down:
+            map_rect.y -= speed
+            # turtle = load_image("turtle_down.png")
+            # turtle_mask = pygame.mask.from_surface(turtle, 50)
+
+
+    # see how far the map rect is offset from the turtle rect.
+    bx, by = (map_rect[0], map_rect[1])
+    offset_x = bx - math.floor(screen_x/2-150)#turtle_rect[0]
+    offset_y = by - math.floor(screen_y/2-100)#turtle_rect[1]
+
+    cx, cy = (baby_rect[0], baby_rect[1])
+    offset_a = cx - math.floor(screen_x/2-150)#turtle_rect[0]
+    offset_b = cy - math.floor(screen_y/2-100)#turtle_rect[1]
+
+    #print bx, by
+    overlap = turtle_mask.overlap(map_mask, (offset_x, offset_y))
+    touchbaby = turtle_mask.overlap(baby_mask, (offset_a, offset_b))
+
+    #
+    last_bx, last_by = bx, by
+
+
+    # draw the background color, and the terrain.
+    screen.fill((7,176,157))
+
+    # liquid function for making it liquidy
+    anim = anim + 0.02
+    for x in xblocks:
+        xpos = (x + (sin(anim + x * 0.01) * 15)) + 20
+        for y in yblocks:
+            ypos = (y + (sin(anim + y * 0.01) * 15)) + 20
+            screen.blit(ocean, (x, y), (xpos, ypos, 20, 20))
+
+    # see if there was an overlap of pixels between the map
+    #   and the terrain.
+    if touchbaby:
+        print("BABYYYYY")
+        #turtle image becomes turtle + baby image?
+        #stop baby from moving w the map?
+    if overlap:
+        # we have hit the wall!!!  oh noes!
+        if keys[K_LEFT]:
+            map_rect.x -= speed
+        if keys[K_RIGHT]:
+            map_rect.x += speed
+        if keys[K_UP]:
+            map_rect.y -= speed
+        if keys[K_DOWN]:
+            map_rect.y += speed
+        counter += 1
+        damage(counter)
+        print("COLLISION!")
+
+    # draw map + turtle
+    screen.blit(map, (map_rect[0], map_rect[1]) )
+    screen.blit(turtle,(screen_x/2-150,screen_y/2-100)) #draws turtle in center
+    screen.blit(baby, (map_rect[0], map_rect[1]) )
+    screen.blit(healthbar_surf, (10, 10)) #location on screen
+    # draw the map rect, so you can see where the bounding rect would be.
+    pygame.draw.rect(screen, (0,255,0), map_rect, 1)
+
+
+    # flip the display.
+    pygame.display.flip()
+    time.sleep(0.01)
+
+    # # limit the frame rate to 40fps.
+    # clock.tick(40)
+
+pygame.quit()
