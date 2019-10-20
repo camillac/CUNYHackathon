@@ -20,7 +20,7 @@ main_dir = os.path.split(os.path.abspath(__file__))[0]
 pygame.display.init()
 pygame.font.init()
 
-logo = pygame.image.load("../turt_left.png")
+logo = pygame.image.load("turt_left.png")
 pygame.display.set_icon(logo)
 pygame.display.set_caption("Turtles In Trash")
 #self._running = True
